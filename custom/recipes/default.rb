@@ -6,6 +6,13 @@ template "/etc/php5/apache2/php.ini" do
   mode "0644"
 end
 
+template "home/vagrant/.gitconfig" do
+  source ".gitconfig.erb"
+  owner "vagrant"
+  group "vagrant"
+  mode "0644"
+end
+
 # Setup a virtual host for apache
 hostname = node['webapp']['hostname']
 app_path = node['webapp']['path']
@@ -20,23 +27,25 @@ end
 
 mysql_connection_info = {:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']}
 
+database_details = node['webapp']['database']
+
 # Create db
-mysql_database 'symfony' do
+mysql_database database_details['name'] do
   connection mysql_connection_info
   action :create
 end
 
 # Create db user
-mysql_database_user 'symfony' do
+mysql_database_user database_details['user'] do
   connection mysql_connection_info
-  password 'symfony'
+  password database_details['password']
   action :create
 end
 
 # Grant db user access to db
-mysql_database_user 'symfony' do
+mysql_database_user database_details['user'] do
   connection mysql_connection_info
-  database_name 'symfony'
+  database_name database_details['name']
   action :grant
 end
 
