@@ -101,6 +101,7 @@ end
 # Dump assets for production
 symfony2_console "dump assets for env prod" do
   action :cmd
-  command "assetic:dump --env prod"
+  command "assetic:dump"
+  env "prod"
   path app_path
 end
