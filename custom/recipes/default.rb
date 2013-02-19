@@ -92,16 +92,3 @@ execute "install phpunit" do
   action :run
   not_if "which phpunit"
 end
-
-#Run composer install
-composer_project app_path do
-  action [:install]
-end
-
-# Dump assets for production
-symfony2_console "dump assets for env prod" do
-  action :cmd
-  command "assetic:dump"
-  env "prod"
-  path app_path
-end
